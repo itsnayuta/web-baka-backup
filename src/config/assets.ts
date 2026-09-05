@@ -27,6 +27,12 @@ import bakaLogo from "@/public/images/logo-trimmed.png";
 import plusProductCard from "@/public/images/the_sp_plus.png";
 import cacaoProductCard from "@/public/images/the_sp_cacao.png";
 import audienceLifestyle from "@/public/images/audience-lifestyle.png";
+import testReportOne from "@/public/images/kiemnghiem_1.png";
+import testReportTwo from "@/public/images/kiemnghiem_2.png";
+import testReportThree from "@/public/images/kiemnghiem_3.png";
+import certificateOne from "@/public/images/chungnhan_1.png";
+import certificateTwo from "@/public/images/chungnhan_2.png";
+import certificateThree from "@/public/images/chungnhan_3.png";
 
 export const brandAssets = {
   logo: bakaLogo,
@@ -69,6 +75,10 @@ export const sectionAssets = {
   testimonials: {
     topShape: testimonialTopShape,
     bottomShape: testimonialBottomShape,
+  },
+  documents: {
+    testReports: [testReportOne, testReportTwo, testReportThree],
+    certificates: [certificateOne, certificateTwo, certificateThree],
   },
   knowledge: {
     divider: blogLine,

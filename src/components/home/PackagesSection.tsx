@@ -24,7 +24,7 @@ const channels: OfficialChannel[] = [
     tone: "shopee",
   },
   {
-    name: "TIKTOK",
+    name: "TIKTOKSHOP MALL",
     label: "KÊNH VIDEO CHÍNH THỨC",
     description:
       "Theo dõi nội dung ngắn, hướng dẫn sử dụng và những cập nhật mới nhất từ BAKA.",
@@ -62,7 +62,6 @@ export function PackagesSection() {
           <h2>KÊNH CHÍNH THỨC CỦA BAKA</h2>
           <span>
             Mua sản phẩm hoặc theo dõi BAKA tại các kênh chính thức dưới đây.
-            Ba kênh đều được hiển thị đồng cấp để bạn lựa chọn thuận tiện.
           </span>
         </header>
 
