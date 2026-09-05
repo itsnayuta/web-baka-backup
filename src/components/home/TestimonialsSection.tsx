@@ -51,6 +51,18 @@ function ArrowIcon({ direction }: { direction: "previous" | "next" }) {
   );
 }
 
+function getSlidePosition(index: number, activeIndex: number) {
+  const total = documents.length;
+  let distance = index - activeIndex;
+
+  if (distance > total / 2) distance -= total;
+  if (distance < -total / 2) distance += total;
+  if (distance === -1) return "previous";
+  if (distance === 0) return "active";
+  if (distance === 1) return "next";
+  return distance < 0 ? "far-previous" : "far-next";
+}
+
 export function TestimonialsSection() {
   const [activeIndex, setActiveIndex] = useState(1);
   const activeDocument = documents[activeIndex];
@@ -108,11 +120,10 @@ export function TestimonialsSection() {
           </button>
 
           <div className="document-carousel__stage">
-            {([-1, 0, 1] as const).map((offset) => {
-              const index = (activeIndex + offset + documents.length) % documents.length;
-              const document = documents[index];
-              const position = offset === -1 ? "previous" : offset === 1 ? "next" : "active";
+            {documents.map((document, index) => {
+              const position = getSlidePosition(index, activeIndex);
               const isActive = position === "active";
+              const isVisible = position === "previous" || isActive || position === "next";
 
               return (
                 <button
@@ -120,7 +131,8 @@ export function TestimonialsSection() {
                   type="button"
                   onClick={() => setActiveIndex(index)}
                   aria-label={isActive ? `${document.title}, đang hiển thị` : `Hiển thị ${document.title}`}
-                  tabIndex={isActive ? -1 : 0}
+                  aria-hidden={!isVisible}
+                  tabIndex={isVisible && !isActive ? 0 : -1}
                   key={document.image.src}
                 >
                   <span className="document-slide__frame">
@@ -128,7 +140,7 @@ export function TestimonialsSection() {
                       src={document.image}
                       alt={document.title}
                       fill
-                      loading="eager"
+                      loading={isVisible ? "eager" : "lazy"}
                       sizes="(max-width: 767px) 270px, 350px"
                     />
                   </span>
@@ -147,7 +159,7 @@ export function TestimonialsSection() {
           </button>
         </div>
 
-        <div className="document-gallery__caption" aria-live="polite">
+        <div className="document-gallery__caption" aria-live="polite" key={activeDocument.image.src}>
           <div>
             <span>{activeDocument.category}</span>
             <h3>{activeDocument.title}</h3>
