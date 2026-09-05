@@ -1,7 +1,7 @@
 "use client";
 
 import Image, { type StaticImageData } from "next/image";
-import { useState, type CSSProperties, type KeyboardEvent } from "react";
+import { useEffect, useReducer, type CSSProperties, type KeyboardEvent } from "react";
 import { sectionAssets } from "@/config/assets";
 
 type DocumentItem = {
@@ -51,35 +51,72 @@ function ArrowIcon({ direction }: { direction: "previous" | "next" }) {
   );
 }
 
-function getSlidePosition(index: number, activeIndex: number) {
-  const total = documents.length;
-  let distance = index - activeIndex;
+const slideCount = documents.length;
+const trackDocuments = [...documents, ...documents, ...documents];
+type TrackState = { position: number; queued: number; phase: "idle" | "moving" | "reset" };
+type TrackAction = { type: "move"; steps: number } | { type: "finish" | "ready" };
 
-  if (distance > total / 2) distance -= total;
-  if (distance < -total / 2) distance += total;
-  if (distance === -1) return "previous";
-  if (distance === 0) return "active";
-  if (distance === 1) return "next";
-  return distance < 0 ? "far-previous" : "far-next";
+function startQueuedMove(state: TrackState): TrackState {
+  if (!state.queued) return { ...state, phase: "idle" };
+  const direction = Math.sign(state.queued);
+  return { position: state.position + direction, queued: state.queued - direction, phase: "moving" };
+}
+
+function trackReducer(state: TrackState, action: TrackAction): TrackState {
+  if (action.type === "move") {
+    const next = { ...state, queued: state.queued + action.steps };
+    return state.phase === "idle" ? startQueuedMove(next) : next;
+  }
+  if (action.type === "ready") return state.phase === "reset" ? startQueuedMove(state) : state;
+  if (state.phase !== "moving") return state;
+
+  // Rebase onto an identical copy only after the visible transition finishes.
+  const position = ((state.position % slideCount) + slideCount) % slideCount + slideCount;
+  if (position !== state.position) return { ...state, position, phase: "reset" };
+  return startQueuedMove(state);
 }
 
 export function TestimonialsSection() {
-  const [activeIndex, setActiveIndex] = useState(1);
+  const [track, dispatch] = useReducer(trackReducer, { position: slideCount + 1, queued: 0, phase: "idle" });
+  const activeIndex = track.position % slideCount;
   const activeDocument = documents[activeIndex];
+  useEffect(() => {
+    if (track.phase === "reset") {
+      let secondFrame = 0;
+      const firstFrame = requestAnimationFrame(() => {
+        secondFrame = requestAnimationFrame(() => dispatch({ type: "ready" }));
+      });
+      return () => { cancelAnimationFrame(firstFrame); cancelAnimationFrame(secondFrame); };
+    }
+    if (track.phase === "moving") {
+      // Also settle when reduced motion or an interrupted render skips transitionend.
+      const timer = window.setTimeout(() => dispatch({ type: "finish" }), 850);
+      return () => window.clearTimeout(timer);
+    }
+  }, [track.phase, track.position]);
   const sectionStyle = {
     "--testimonial-top-shape": `url("${sectionAssets.testimonials.topShape.src}")`,
     "--testimonial-bottom-shape": `url("${sectionAssets.testimonials.bottomShape.src}")`,
   } as CSSProperties;
 
   const showPrevious = () => {
-    setActiveIndex((current) => (current - 1 + documents.length) % documents.length);
+    dispatch({ type: "move", steps: -1 });
   };
 
   const showNext = () => {
-    setActiveIndex((current) => (current + 1) % documents.length);
+    dispatch({ type: "move", steps: 1 });
+  };
+
+  const selectDocument = (index: number) => {
+    const target = (track.position + track.queued + slideCount * 10) % slideCount;
+    let steps = index - target;
+    if (steps > slideCount / 2) steps -= slideCount;
+    if (steps < -slideCount / 2) steps += slideCount;
+    dispatch({ type: "move", steps });
   };
 
   const handleKeyboard = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "ArrowLeft" || event.key === "ArrowRight") event.preventDefault();
     if (event.key === "ArrowLeft") showPrevious();
     if (event.key === "ArrowRight") showNext();
   };
@@ -120,33 +157,41 @@ export function TestimonialsSection() {
           </button>
 
           <div className="document-carousel__stage">
-            {documents.map((document, index) => {
-              const position = getSlidePosition(index, activeIndex);
-              const isActive = position === "active";
-              const isVisible = position === "previous" || isActive || position === "next";
+            <div
+              className="document-carousel__track"
+              data-reset={track.phase === "reset" ? "true" : undefined}
+              style={{ "--track-position": track.position } as CSSProperties}
+              onTransitionEnd={(event) => {
+                if (event.target === event.currentTarget && event.propertyName === "transform") dispatch({ type: "finish" });
+              }}
+            >
+            {trackDocuments.map((document, index) => {
+              const isActive = index === track.position;
+              const isVisible = Math.abs(index - track.position) <= 1;
 
               return (
                 <button
-                  className={`document-slide document-slide--${position}`}
+                  className={`document-slide${isActive ? " document-slide--active" : ""}`}
                   type="button"
-                  onClick={() => setActiveIndex(index)}
+                  onClick={() => selectDocument(index % slideCount)}
                   aria-label={isActive ? `${document.title}, đang hiển thị` : `Hiển thị ${document.title}`}
                   aria-hidden={!isVisible}
                   tabIndex={isVisible && !isActive ? 0 : -1}
-                  key={document.image.src}
+                  key={index}
                 >
                   <span className="document-slide__frame">
                     <Image
                       src={document.image}
                       alt={document.title}
                       fill
-                      loading={isVisible ? "eager" : "lazy"}
+                      loading="eager"
                       sizes="(max-width: 767px) 270px, 350px"
                     />
                   </span>
                 </button>
               );
             })}
+            </div>
           </div>
 
           <button
@@ -159,7 +204,7 @@ export function TestimonialsSection() {
           </button>
         </div>
 
-        <div className="document-gallery__caption" aria-live="polite" key={activeDocument.image.src}>
+        <div className="document-gallery__caption" aria-live="polite">
           <div>
             <span>{activeDocument.category}</span>
             <h3>{activeDocument.title}</h3>
@@ -174,7 +219,7 @@ export function TestimonialsSection() {
             <button
               className={index === activeIndex ? "is-active" : ""}
               type="button"
-              onClick={() => setActiveIndex(index)}
+              onClick={() => selectDocument(index)}
               aria-label={`Tài liệu ${index + 1}: ${document.title}`}
               aria-current={index === activeIndex ? "true" : undefined}
               key={document.title}
