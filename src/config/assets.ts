@@ -4,9 +4,9 @@ import bananaLeafLeft from "@/public/images/la-chuoi-1.png";
 import bananaLeafRight from "@/public/images/la-chuoi-2.png";
 import powderPlus from "@/public/images/bat-plus.png";
 import powderCacao from "@/public/images/bat-cacao.png";
-import shopee from "@/public/images/doitac-1.png";
-import tiktok from "@/public/images/doitac-2.png";
-import facebook from "@/public/images/doitac-3.png";
+import shopee from "@/public/images/doitac-1-trimmed.png";
+import tiktok from "@/public/images/doitac-2-trimmed.png";
+import facebook from "@/public/images/doitac-3-trimmed.png";
 import featuresBackground from "@/public/images/features_bg.jpg";
 import featuresTopShape from "@/public/images/features_shape01.png";
 import featuresBottomShape from "@/public/images/features_shape02.png";
@@ -26,6 +26,7 @@ import footerTopShape from "@/public/images/footer_bg_shape.png";
 import bakaLogo from "@/public/images/logo-trimmed.png";
 import plusProductCard from "@/public/images/the_sp_plus.png";
 import cacaoProductCard from "@/public/images/the_sp_cacao.png";
+import audienceLifestyle from "@/public/images/audience-lifestyle.png";
 
 export const brandAssets = {
   logo: bakaLogo,
@@ -71,6 +72,9 @@ export const sectionAssets = {
   },
   knowledge: {
     divider: blogLine,
+  },
+  audience: {
+    lifestyle: audienceLifestyle,
   },
   footer: {
     topShape: footerTopShape,
