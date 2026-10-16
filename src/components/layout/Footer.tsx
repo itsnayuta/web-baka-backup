@@ -20,13 +20,7 @@ const supportLinks = [
 ] as const;
 
 export function Footer() {
-  const galleryAssets = [
-    sectionAssets.productShowcase.first,
-    heroAssets.product,
-    sectionAssets.productShowcase.second,
-    heroAssets.powderLeft,
-    heroAssets.ingredientRight,
-  ];
+  const galleryAssets = sectionAssets.footer.gallery;
   const footerStyle = {
     "--footer-top-shape": `url("${sectionAssets.footer.topShape.src}")`,
   } as CSSProperties;
@@ -34,7 +28,7 @@ export function Footer() {
     <footer className="site-footer" id="contact" style={footerStyle}>
       <div className="footer-gallery" aria-label="Thư viện hình ảnh BAKA">
         <div className="section-container footer-gallery__inner">
-          {galleryAssets.map((asset, index) => <div className={`footer-tile footer-tile--${index + 1}`} data-reveal="fade-up" data-reveal-delay={index * 90} key={asset.src}><Image src={asset} alt="" fill quality={90} sizes="(max-width: 767px) 320px, 420px" style={{ objectFit: "contain" }} aria-hidden="true" /></div>)}
+          {galleryAssets.map((asset, index) => <div className={`footer-tile footer-tile--${index + 1}`} data-reveal="fade-up" data-reveal-delay={index * 90} key={asset.src}><Image src={asset} alt="BAKA Lifestyle Gallery" fill quality={85} sizes="(max-width: 767px) 180px, 258px" style={{ objectFit: "cover" }} /></div>)}
         </div>
       </div>
       <div className="footer-main">

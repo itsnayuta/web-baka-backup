@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import type { CSSProperties } from "react";
 import { sectionAssets } from "@/config/assets";
@@ -30,7 +31,15 @@ export function KnowledgeSection() {
           <div className="section-heading knowledge-heading" data-reveal="fade-up"><p>.. KIẾN THỨC BAKA ..</p><h2>BÀI VIẾT MỚI</h2></div>
           <div className="news-list">
             {articles.map(([category, title], index) => <article className={`news-item news-item--${index + 1}`} data-reveal="fade-left" data-reveal-delay={120 + index * 110} key={title}>
-              <div className="news-thumb" aria-hidden="true"><i /><i /><i /></div>
+              <div className="news-thumb">
+                <Image
+                  src={sectionAssets.knowledge.articles[index]}
+                  alt={title}
+                  fill
+                  sizes="(max-width: 767px) 150px, 200px"
+                  style={{ objectFit: "cover" }}
+                />
+              </div>
               <div className="news-copy"><div className="news-meta"><span>{category}</span><span>BAKA</span></div><h3>{title}</h3><div className="news-status">KIẾN THỨC ĐƯỢC TRÌNH BÀY CÓ NGUỒN</div></div>
             </article>)}
           </div>

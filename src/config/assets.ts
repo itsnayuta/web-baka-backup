@@ -33,6 +33,14 @@ import testReportThree from "@/public/images/kiemnghiem_3.webp";
 import certificateOne from "@/public/images/chungnhan_1.webp";
 import certificateTwo from "@/public/images/chungnhan_2.webp";
 import certificateThree from "@/public/images/chungnhan_3.webp";
+import newsOne from "@/public/images/news-1.webp";
+import newsTwo from "@/public/images/news-2.webp";
+import newsThree from "@/public/images/news-3.webp";
+import footerGalleryOne from "@/public/images/footer-gallery-1.webp";
+import footerGalleryTwo from "@/public/images/footer-gallery-2.webp";
+import footerGalleryThree from "@/public/images/footer-gallery-3.webp";
+import footerGalleryFour from "@/public/images/footer-gallery-4.webp";
+import footerGalleryFive from "@/public/images/footer-gallery-5.webp";
 
 export const brandAssets = {
   logo: bakaLogo,
@@ -82,11 +90,19 @@ export const sectionAssets = {
   },
   knowledge: {
     divider: blogLine,
+    articles: [newsOne, newsTwo, newsThree],
   },
   audience: {
     lifestyle: audienceLifestyle,
   },
   footer: {
     topShape: footerTopShape,
+    gallery: [
+      footerGalleryOne,
+      footerGalleryTwo,
+      footerGalleryThree,
+      footerGalleryFour,
+      footerGalleryFive,
+    ],
   },
 } as const;
