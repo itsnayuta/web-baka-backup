@@ -30,8 +30,8 @@ export function Hero() {
   } as CSSProperties;
 
   return (
-    <MotionConfig reducedMotion={process.env.NODE_ENV === "production" ? "user" : "never"}>
-    <section className="hero" id="home" style={heroStyle} data-force-motion={process.env.NODE_ENV !== "production" ? "true" : undefined}>
+    <MotionConfig reducedMotion="never">
+    <section className="hero" id="home" style={heroStyle} data-force-motion="true">
       <div className="hero-container">
         <div className="hero-content">
           <motion.p className="hero-eyebrow" initial="hidden" animate="visible" variants={heroEyebrow}>

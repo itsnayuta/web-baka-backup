@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://baka.com.vn/sitemap.xml
+

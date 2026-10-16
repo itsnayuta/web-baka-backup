@@ -184,7 +184,6 @@ export function TestimonialsSection() {
                       src={document.image}
                       alt={document.title}
                       fill
-                      loading="eager"
                       sizes="(max-width: 767px) 270px, 350px"
                     />
                   </span>
